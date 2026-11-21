@@ -1,0 +1,813 @@
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box; /* width sudah termasuk padding + border */
+  }
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul,
+  figure,
+  blockquote {
+    margin: 0; /* hapus margin bawaan browser */
+  }
+  ul {
+    padding: 0;
+    list-style: none; /* hapus bullet bawaan */
+  }
+  img {
+    max-width: 100%; /* gambar tidak boleh lebih lebar dari induknya */
+    display: block; /* hapus celah kecil di bawah gambar */
+  }
+  a {
+    color: inherit; /* warna link mengikuti induk */
+    text-decoration: none; /* hapus garis bawah link */
+  }
+  input,
+  select,
+  button {
+    font: inherit; /* form memakai font halaman */
+    color: inherit;
+  }
+}
+
+/* ==== [1] DASAR ==== */
+html {
+  scroll-behavior: smooth;
+} /* scroll halus saat klik link #id */
+
+body {
+  font-family: "IBM Plex Sans", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #5b6776;
+  background: #ffffff;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: #021526;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/* Pembungkus konten: lebar maksimal 1200px dan selalu di tengah */
+.container {
+  width: 100%;
+  max-width: 1232px; /* 1200px konten + 2 x 16px padding */
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.bagian {
+  padding: 64px 0;
+} /* jarak atas-bawah setiap bagian */
+
+.judul-bagian {
+  font-size: 30px;
+}
+.biru {
+  color: #0360d9;
+}
+
+/* Tombol bulat yang dipakai di beberapa bagian */
+.tombol {
+  display: inline-block;
+  padding: 9px 26px;
+  border: 2px solid #0360d9;
+  border-radius: 999px;
+  background: #0360d9;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+}
+.tombol:hover {
+  background: #024fb3;
+  border-color: #024fb3;
+}
+.tombol-garis {
+  background: transparent;
+  color: #0360d9;
+}
+.tombol-garis:hover {
+  background: #ffffff;
+  color: #0360d9;
+}
+
+/* Link "Selengkapnya →" */
+.tautan {
+  color: #0360d9;
+  font-weight: 600;
+  font-size: 15px;
+}
+.tautan span {
+  display: inline-block;
+}
+.tautan:hover span {
+  transform: translateX(4px);
+} /* panah bergeser saat hover */
+
+/* Foto bersudut bulat */
+.foto {
+  width: 100%;
+  border-radius: 16px;
+}
+
+@media (min-width: 768px) {
+  .judul-bagian {
+    font-size: 36px;
+  }
+}
+@media (min-width: 1024px) {
+  .bagian {
+    padding: 96px 0;
+  }
+  .judul-bagian {
+    font-size: 40px;
+  }
+}
+
+/* ==== [A] HEADER & MENU ==== */
+.navbar {
+  position: sticky; /* menempel di atas saat di-scroll */
+  top: 0;
+  z-index: 100; /* selalu di depan elemen lain */
+  background: #e1eeff;
+}
+
+.navbar-isi {
+  display: flex;
+  flex-wrap: wrap; /* menu ponsel boleh turun ke baris baru */
+  justify-content: space-between; /* logo di kiri, ☰ di kanan */
+  align-items: center;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #021526;
+}
+.logo::before {
+  /* ikon "+" dibuat dengan CSS saja */
+  content: "+";
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #0360d9;
+  color: #ffffff;
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* Checkbox disembunyikan; yang diklik pengguna adalah label ☰ */
+#toggle-menu {
+  display: none;
+}
+
+.hamburger {
+  font-size: 28px;
+  line-height: 1;
+  color: #021526;
+  cursor: pointer;
+}
+
+.menu {
+  display: none; /* di ponsel menu tersembunyi */
+  width: 100%; /* saat muncul, isi satu baris penuh */
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+}
+#toggle-menu:checked ~ .menu {
+  /* checkbox dicentang -> menu tampil */
+  display: flex;
+}
+
+.menu-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.menu-link a {
+  position: relative; /* patokan untuk garis ::after */
+  display: inline-block;
+  padding: 6px 0;
+  color: #021526;
+  font-weight: 500;
+}
+.menu-link a:hover,
+.menu-link a.aktif {
+  color: #0360d9;
+}
+.menu-link a.aktif::after {
+  /* garis biru di bawah menu aktif */
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #0360d9;
+}
+
+.menu-tombol {
+  display: flex;
+  gap: 12px;
+}
+
+@media (min-width: 1024px) {
+  .hamburger {
+    display: none;
+  } /* ☰ tidak perlu di desktop */
+  .navbar-isi {
+    flex-wrap: nowrap;
+  }
+  .menu {
+    display: flex; /* menu selalu tampil */
+    flex: 1; /* isi sisa ruang di kanan logo */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    padding-top: 0;
+    margin-left: 120px;
+  }
+  .menu-link {
+    flex-direction: row;
+    gap: 28px;
+    margin: 0 auto; /* menu link di tengah */
+  }
+}
+/* ==== [B] HERO ==== */
+.hero {
+  position: relative; /* patokan untuk .hero-gambar (desktop) */
+  overflow: hidden; /* potong lingkaran yang keluar */
+  background: #e1eeff;
+}
+
+.hero-isi {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.hero h1 {
+  font-size: 38px;
+  max-width: 560px;
+  margin-bottom: 16px;
+}
+
+/* Kata "Favorit" berwarna biru dengan garis lengkung di bawahnya */
+.sorot {
+  position: relative;
+  color: #0360d9;
+  white-space: nowrap;
+}
+.sorot::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: -6px;
+  bottom: -10px;
+  height: 14px;
+  border-bottom: 3px solid #0360d9;
+  border-radius: 0 0 50% 50%; /* sudut bawah bulat -> garis melengkung */
+}
+
+.hero-teks > p {
+  max-width: 420px;
+  margin-bottom: 32px;
+}
+
+/* Kotak pencarian berbentuk kapsul */
+.cari {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 500px;
+  padding: 8px 8px 8px 20px;
+  background: #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(3, 96, 217, 0.12);
+}
+.cari-pilihan {
+  flex: 1; /* dua pilihan berbagi ruang sama rata */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0; /* boleh mengecil di layar sempit */
+  font-size: 14px;
+}
+.cari svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0; /* ikon tidak ikut mengecil */
+  fill: none;
+  stroke: #5b6776;
+  stroke-width: 1.6;
+}
+.cari select {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: #021526;
+  cursor: pointer;
+}
+.cari-tombol {
+  flex: 0 0 48px; /* ukuran tetap 48px */
+  height: 48px;
+  display: grid;
+  place-items: center; /* ikon kaca pembesar tepat di tengah */
+  border: 0;
+  border-radius: 50%;
+  background: #0360d9;
+  cursor: pointer;
+}
+.cari-tombol svg {
+  stroke: #ffffff;
+  stroke-width: 2.2;
+}
+
+/* Foto dokter + lingkaran biru di belakangnya */
+.hero-gambar {
+  position: relative;
+  height: 340px;
+}
+.hero-gambar::before {
+  /* lingkaran biru */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -120px;
+  width: 420px;
+  aspect-ratio: 1; /* tinggi = lebar -> persegi */
+  transform: translateX(-50%); /* geser ke kiri setengah lebarnya = tengah */
+  border-radius: 50%; /* persegi menjadi lingkaran */
+  background: #a9cbf7;
+}
+.hero-gambar img {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  width: auto;
+  max-width: none;
+  z-index: 2; /* di depan pita statistik (z-index 1) */
+}
+
+@media (min-width: 1024px) {
+  .hero-isi {
+    padding-top: 120px;
+    padding-bottom: 150px;
+  }
+  .hero h1 {
+    font-size: 58px;
+  }
+
+  /* Catatan: Pada kode asli tertulis .hero-ganbar (mengikuti typo di gambar), disesuaikan agar berfungsi */
+  .hero-gambar,
+  .hero-ganbar {
+    position: absolute; /* keluar dari normal flow, pindah ke kanan */
+    right: 0;
+    bottom: 0;
+    width: 48%;
+    height: 100%; /* setinggi hero, termasuk pita statistik */
+  }
+  .hero-gambar::before,
+  .hero-ganbar::before {
+    left: auto;
+    right: -140px;
+    bottom: -220px;
+    width: 760px;
+    transform: none;
+  }
+  .hero-gambar img,
+  .hero-ganbar img {
+    left: auto;
+    right: 0;
+    transform: none;
+    height: 92%;
+  }
+}
+
+/* ==== [C] STATISTIK ==== */
+.statistik {
+  position: relative; /* agar z-index berlaku */
+  z-index: 1; /* di belakang foto dokter (z-index 2) */
+  padding: 20px 0;
+  background: #0360d9;
+  color: #ffffff;
+}
+
+.stat-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+.stat-list li {
+  display: flex;
+  flex-direction: column; /* angka di atas, keterangan di bawah */
+  align-items: center;
+}
+.stat-list strong {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.stat-list span {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+  .stat-list {
+    justify-content: flex-start;
+    gap: 0;
+  }
+  .stat-list li {
+    padding: 0 28px;
+    border-left: 1px solid rgba(255, 255, 255, 0.6); /* garis pemisah */
+  }
+  .stat-list li:first-child {
+    /* item pertama tanpa garis */
+    padding-left: 0;
+    border-left: 0;
+  }
+  .stat-list strong {
+    font-size: 44px;
+  }
+}
+@media (min-width: 1024px) {
+  .statistik {
+    padding: 26px 0;
+  }
+}
+
+/* ==== [D] LAYANAN SPESIALIS ==== */
+#layanan .judul-bagian {
+  margin-bottom: 32px;
+}
+
+.layanan-list {
+  display: grid;
+  grid-template-columns: 1fr; /* ponsel: 1 kolom */
+  gap: 20px;
+}
+
+.kartu {
+  display: grid;
+  grid-row: span 3; /* kartu menempati 3 baris grid induk */
+  grid-template-rows: subgrid; /* ikon, judul, teks sejajar antar kartu */
+  gap: 12px;
+  padding: 24px;
+  border: 1px solid #8a97a3;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.kartu-ikon {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center; /* ikon di tengah lingkaran */
+  border-radius: 50%;
+  background: #e1eeff;
+}
+.kartu-ikon img {
+  width: 34px;
+}
+
+.kartu h3 {
+  font-size: 18px;
+  font-weight: 600;
+  align-self: end;
+}
+.kartu p {
+  font-size: 14px;
+}
+
+/* Kartu aktif dan kartu yang di-hover berubah biru */
+.kartu.aktif,
+.kartu:hover {
+  background: #0360d9;
+  border-color: #0360d9;
+  color: #e1eeff;
+}
+.kartu.aktif h3,
+.kartu:hover h3 {
+  color: #ffffff;
+}
+.kartu.aktif .kartu-ikon,
+.kartu:hover .kartu-ikon {
+  background: #ffffff;
+}
+
+@media (min-width: 768px) {
+  .layanan-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .layanan-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ==== [E] MENGAPA MEMILIH KAMI ==== */
+/* .dua-kolom dan .teks juga dipakai di bagian F dan G */
+.dua-kolom {
+  display: grid;
+  grid-template-columns: 1fr; /* ponsel: 1 kolom */
+  gap: 40px;
+  align-items: center; /* foto & teks sejajar di tengah */
+}
+
+.teks {
+  display: grid;
+  gap: 20px; /* jarak antar judul, paragraf, link */
+  justify-items: start; /* link tidak melebar penuh */
+}
+
+.cek {
+  display: grid;
+  gap: 10px;
+  font-size: 15px;
+}
+.cek li {
+  position: relative;
+  padding-left: 28px; /* ruang untuk tanda centang */
+}
+.cek li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #0360d9;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .dua-kolom {
+    grid-template-columns: 1fr 1fr; /* 2 kolom sama lebar */
+    gap: 56px;
+  }
+}
+
+/* ==== [F] TESTIMONI ==== */
+.bagian-biru {
+  background: #e1eeff;
+}
+
+.ulasan {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #021526;
+}
+
+.avatar-list {
+  display: flex;
+}
+.avatar-list img {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #e1eeff;
+  border-radius: 50%;
+  margin-left: -12px; /* margin negatif -> avatar bertumpuk */
+}
+.avatar-list img:first-child {
+  margin-left: 0; /* avatar pertama tidak digeser */
+}
+
+.testimoni {
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #b9c6d6;
+  border-radius: 12px;
+}
+.testimoni-kepala {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.testimoni-foto {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.testimoni-kepala strong {
+  display: block;
+  color: #021526;
+  font-size: 15px;
+}
+.testimoni-kepala small {
+  font-size: 12px;
+}
+.bintang {
+  display: flex;
+  gap: 4px;
+  margin-left: auto; /* dorong bintang ke ujung kanan */
+}
+.bintang img {
+  width: 26px;
+}
+.testimoni blockquote {
+  font-size: 15px;
+}
+
+/* ==== [G] MASA DEPAN KESEHATAN ==== */
+/* Bagian ini memakai ulang .dua-kolom, .teks, .foto, dan .tautan.
+   Perbedaannya hanya urutan HTML: teks dulu, lalu foto. */
+#riwayat .teks p {
+  max-width: 520px;
+}
+
+/* ==== [H] NEWSLETTER ==== */
+.newsletter {
+  padding: 48px 20px;
+  border-radius: 16px;
+  background: #0360d9;
+  text-align: center;
+}
+.newsletter h2 {
+  margin-bottom: 28px;
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.langganan {
+  position: relative; /* patokan untuk tombol bulat */
+  max-width: 640px;
+  margin: 0 auto;
+}
+.langganan input {
+  width: 100%;
+  height: 60px;
+  padding: 0 72px 0 28px; /* ruang kanan untuk tombol */
+  border: 0;
+  border-radius: 999px;
+}
+.langganan input:focus {
+  outline: 3px solid #a9cbf7;
+}
+.langganan button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%); /* tengah secara vertikal */
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #0360d9;
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .newsletter {
+    padding: 64px 40px;
+  }
+  .newsletter h2 {
+    font-size: 32px;
+  }
+}
+
+/* ===== [I] FOOTER ===== */
+
+.footer {
+  padding-top: 56px;
+  background: #035fc8;
+  color: #e1eeff;
+  font-size: 14px;
+}
+
+.footer .logo,
+.footer h4 {
+  color: #ffffff;
+}
+
+.footer .logo {
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.footer h4 {
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.footer-isi {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+.footer-brand {
+  display: grid;
+  gap: 14px;
+  max-width: 380px;
+}
+
+.footer-brand p {
+  line-height: 1.7;
+  margin: 0;
+}
+
+.footer-link {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.footer-link a {
+  color: #e1eeff;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-link a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.sosial {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.sosial a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #310578;
+  transition: 0.3s;
+}
+
+.sosial a:hover {
+  background: #e1eeff;
+  transform: translateY(-3px);
+}
+
+.sosial svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.peta {
+  width: 100%;
+  max-width: 366px;
+  border-radius: 8px;
+  display: block;
+}
+
+.hak-cipta {
+  margin-top: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(225, 238, 255, 0.5);
+  text-align: center;
+  font-size: 13px;
+}
+
+/* RESPONSIVE */
+@media (min-width: 768px) {
+  .footer-isi {
+    grid-template-columns: 2fr 1fr 1.3fr;
+  }
+}
+
+/* ===== AKHIR FOOTER ===== */
